@@ -137,7 +137,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.verticalLayout.removeWidget(self.label1)
 
 
-
 def main():
     app = QApplication(sys.argv)
     window = ExampleApp()
@@ -148,4 +147,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-#%%
+# %%
