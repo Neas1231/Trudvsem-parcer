@@ -2,3 +2,4 @@ selenium
 bs4
 xlsxwriter
 PyQt6
+lxml
