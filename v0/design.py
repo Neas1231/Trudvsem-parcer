@@ -12,6 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        MainWindow.setMaximumSize(400, 0)
         MainWindow.resize(498, 129)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -25,11 +26,11 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.lineEdit = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.lineEdit.setText("")
+        self.lineEdit.setToolTipDuration(-1)
+        self.lineEdit.setInputMask("")
         self.lineEdit.setObjectName("lineEdit")
         self.verticalLayout.addWidget(self.lineEdit)
         self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.pushButton.setEnabled(False)
         self.pushButton.setObjectName("pushButton")
         self.verticalLayout.addWidget(self.pushButton)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -42,6 +43,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Введите url с сайта trudvsem.ru/vacancy/search"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "TrudVsem Parser"))
+        self.label.setText(_translate("MainWindow", "Введите url с сайта trudvsem.ru"))
+        self.lineEdit.setText(_translate("MainWindow", "https://trudvsem.ru/vacancy/search"))
         self.pushButton.setText(_translate("MainWindow", "Спарсить"))

@@ -1,6 +1,7 @@
+import selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium_stealth import stealth
+
 from time import sleep
 import math
 from bs4 import BeautifulSoup
@@ -8,7 +9,7 @@ import re
 import xlsxwriter
 import sys
 from PyQt6.QtWidgets import *
-import design
+from PyQt6 import QtCore, QtGui
 
 
 class Trudvsem_parcer():
@@ -19,19 +20,22 @@ class Trudvsem_parcer():
     def parcing(self):
         book = xlsxwriter.Workbook(r"./parced_data.xlsx")
         page = book.add_worksheet("данные")
+        #from selenium_stealth import stealth
+        # options = webdriver.ChromeOptions()
+        # options.add_argument("start-maximized")
+        # options.add_experimental_option("detach", True)
+        #driver = webdriver.Chrome()#options=options)  #
+        # stealth(driver,
+        #         languages=["ru", "ru-RU"],
+        #         vendor="Google Inc.",
+        #         platform="Win32",
+        #         webgl_vendor="Intel Inc.",
+        #         renderer="Intel Iris OpenGL Engine",
+        #         fix_hairline=True,
+        #         )
+        driver = webdriver.Firefox()
 
-        options = webdriver.ChromeOptions()
-        options.add_argument("start-maximized")
-        driver = webdriver.Chrome(options=options)  #
 
-        stealth(driver,
-                languages=["ru", "ru-RU"],
-                vendor="Google Inc.",
-                platform="Win32",
-                webgl_vendor="Intel Inc.",
-                renderer="Intel Iris OpenGL Engine",
-                fix_hairline=True,
-                )
 
         driver.get(self.url)
         start_button = driver.find_element(By.XPATH, "//button[@class='search-content__button']")
@@ -113,28 +117,68 @@ class Trudvsem_parcer():
                         column_num += 1
 
                     print(i)
-            except:
+            except selenium.common.exceptions.NoSuchElementException:
                 print('Завершено')
             book.close()
 
 
-class ExampleApp(QMainWindow, design.Ui_MainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-        self.lineEdit.textChanged.connect(self.button_activation)
-        self.pushButton.clicked.connect(self.parcing)
+class ExampleApp(QWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setWindowTitle("Trudvsem-parcer")
+        self.main_layout = QVBoxLayout()
+        self.parsing_layout = QVBoxLayout()
+        self.loading_layout = QVBoxLayout()
 
-    def button_activation(self):
-        self.pushButton.setEnabled(True)
+        self.label_main = QLabel()
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.label_main.setFont(font)
+        self.label_main.setTextFormat(QtCore.Qt.TextFormat.AutoText)
+        self.label_main.setObjectName("label_main")
+        self.label_main.setText("Введите url с сайта trudvsem.ru")
+
+        self.url = QLineEdit()
+        self.url.setInputMask("")
+        self.url.setObjectName("url")
+        self.url.setText('https://trudvsem.ru/vacancy/search?_title=')
+
+        self.parsing_button = QPushButton()
+        self.parsing_button.setEnabled(True)
+        self.parsing_button.setObjectName("parsing_button")
+        self.parsing_button.setText('Спарсить')
+
+        self.clear_switch = False
+        self.clear_button = QPushButton('Очистить')
+        self.clear_button.clicked.connect(lambda: self.clear_layer(self.loading_layout))
+
+        self.parsing_layout.addWidget(self.label_main)
+        self.parsing_layout.addWidget(self.url)
+        self.parsing_layout.addWidget(self.parsing_button)
+
+        self.main_layout.addLayout(self.parsing_layout)
+        self.main_layout.addLayout(self.loading_layout)
+
+        self.setLayout(self.main_layout)
+        self.parsing_button.clicked.connect(self.parcing)
 
     def parcing(self):
         self.label1 = QLabel("Загрузка...")
-        self.verticalLayout.addWidget(self.label1)
-        self.pushButton.setEnabled(False)
-        Trudvsem_parcer(self.lineEdit.text()).parcing()
-        self.pushButton.setEnabled(True)
-        self.verticalLayout.removeWidget(self.label1)
+        self.loading_layout.addWidget(self.label1)
+        self.parsing_button.setEnabled(False)
+
+        Trudvsem_parcer(self.url.text()).parcing()
+
+        self.parsing_button.setEnabled(True)
+        self.label2 = QLabel("Выполнено!")
+        self.loading_layout.addWidget(self.label2)
+        self.main_layout.addWidget(self.clear_button)
+        self.clear_switch = True
+
+    def clear_layer(self, layer):
+        for i in reversed(range(layer.count())):
+            layer.takeAt(i).widget().deleteLater()
+        self.resize(400, 1)
 
 
 def main():
@@ -146,5 +190,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# %%
