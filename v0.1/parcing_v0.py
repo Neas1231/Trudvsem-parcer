@@ -55,7 +55,7 @@ class Trudvsem_parcer():
                         for e in element:
                             if e.text == 'Загрузить ещё':
                                 driver.execute_script("arguments[0].click();", e)
-                    for i in range(num_vacancy+1):
+                    for i in range(num_vacancy):
                         elem = driver.find_element(By.XPATH, '//div[@class="search-results-simple-card mb-1"]')
                         info_div = elem.find_elements(By.XPATH,
                                                       '//div[@class="search-results-simple-card__wrapper search-results-simple-card__wrapper_column"]')
