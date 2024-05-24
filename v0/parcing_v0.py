@@ -2,6 +2,7 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+import ctypes
 from time import sleep
 import math
 from bs4 import BeautifulSoup
@@ -54,7 +55,7 @@ class Trudvsem_parcer():
                         for e in element:
                             if e.text == 'Загрузить ещё':
                                 driver.execute_script("arguments[0].click();", e)
-                    for i in range(num_vacancy):
+                    for i in range(num_vacancy+1):
                         elem = driver.find_element(By.XPATH, '//div[@class="search-results-simple-card mb-1"]')
                         info_div = elem.find_elements(By.XPATH,
                                                       '//div[@class="search-results-simple-card__wrapper search-results-simple-card__wrapper_column"]')
@@ -129,6 +130,8 @@ class ExampleApp(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setWindowTitle("Trudvsem-parcer")
+        self.setWindowIcon(QtGui.QIcon('./icon.svg'))
+        self.setMinimumSize(400,0)
         self.main_layout = QVBoxLayout()
         self.parsing_layout = QVBoxLayout()
         self.loading_layout = QVBoxLayout()
@@ -192,4 +195,5 @@ def main():
 
 
 if __name__ == '__main__':
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("company.app.1")
     main()
